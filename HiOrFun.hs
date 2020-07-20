@@ -59,7 +59,7 @@ fsum :: (Num a) => [a] -> a
 fsum xs = foldl (\acc x -> acc + x) 0 xs
 
 fsum' :: (Num a) => [a] -> a 
-fsum' = foldl (+) 0
+fsum' xs = foldl (+) 0 xs
 
 felem :: (Eq a) => a -> [a] -> Bool
 felem y ys = foldl (\acc x -> if x == y then True else acc) False ys
@@ -67,8 +67,46 @@ felem y ys = foldl (\acc x -> if x == y then True else acc) False ys
 fmap :: (a -> b) -> [a] -> [b]
 fmap f xs = foldr (\x acc -> f x : acc) [] xs
 
+-- this is far more expensive computationally since ++ is much more difficult than :
+fmapl :: (a -> b) -> [a] -> [b]
+fmapl f xs = foldl (\acc x -> acc ++ [f x]) [] xs
+
 -- using right folds is useful when building new lists based on 
 -- old lists because the : operartor is much less expensive to 
 -- use than repetedly doing ++
 
+-- Left folds DON"T work on infinite lists, yet right ones do, this makes sense cus infinity
+
+-- sum can be even simpler with foldl1
+easySum :: (Num a) => [a] -> a
+easySum = foldl1 (+)
+
+-- here's some standard funcs with fold
+maximum' :: (Ord a) => [a] -> a  
+maximum' = foldr1 (\x acc -> if x > acc then x else acc)  
+  
+reverse' :: [a] -> [a]  
+reverse' = foldl (\acc x -> x : acc) []  
+  
+product' :: (Num a) => [a] -> a  
+product' = foldr1 (*)  
+  
+filter' :: (a -> Bool) -> [a] -> [a]  
+filter' p = foldr (\x acc -> if p x then x : acc else acc) []  
+  
+-- this is a pretty dumb one, as it could be simple pattern matching
+head' :: [a] -> a  
+head' = foldr1 (\x _ -> x)  
+  
+last' :: [a] -> a  
+last' = foldl1 (\_ x -> x) 
+
+-- i'm now reading about $
+-- map ($ 3) [(4+), (10*), (^2), sqrt]  
+--[7.0,30.0,9.0,1.7320508075688772]  
+-- this shows mapping over a list of different functions being applied
+
+-- pointless/point free
+easySum2 :: (Num a) => [a] -> a
+easySum2 = foldl (+) 0
 
