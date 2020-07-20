@@ -1,6 +1,6 @@
 -- example of the convenience of curried statements
-compareWithHundred :: (Nume a, Ord a) => a -> Ordering
-compareWithHundred = comare 100 -- we don't need the second term here
+compareWithHundred :: (Num a, Ord a) => a -> Ordering
+compareWithHundred = compare 100 -- we don't need the second term here
 
 divideByTen :: (Floating a) => a -> a
 divideByTen = (/10)
@@ -17,23 +17,23 @@ applyTwice f x = f (f x)
 zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
 zipWith' _ [] _ = []
 zipWith' _ _ [] = []
-zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs xy
+zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys
 
 flip' :: (a -> b -> c) -> (b -> a -> c)
 flip' f y x = f x y
 
 -- MAPS!!!
 
-map :: (a -> b) -> [a] -> [b]
-map _ [] = []
-map f (x:xs) = f x : map f xs
+map' :: (a -> b) -> [a] -> [b]
+map' _ [] = []
+map' f (x:xs) = f x : map' f xs
 -- Note, this is equivalent in some cases at least to list comprehension
 
-filter :: (a -> Bool) -> [a] -> [a]
-filter _ [] = []
-filter p (x:xs)
-    | p x       = x : filter p xs
-    | otherwise = filter p xs
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' _ [] = []
+filter' p (x:xs)
+    | p x       = x : filter' p xs
+    | otherwise = filter' p xs
 
 largestDivisible :: (Integral a) => a
 largestDivisible = head (filter p [100000,99999..])
@@ -50,9 +50,9 @@ chain n
 --lambdas are completely anonymous functions to be thrown in to avoid un-needed declarations
 
 numLongChains :: Int
-numLongChains = lenght (filter (\xs -> length xs > 15) (map chain [1..100]))
+numLongChains = length (filter (\xs -> length xs > 15) (map chain [1..100]))
 
-lflip :: (a -> b -> c) -> b -> a -> chain
+lflip :: (a -> b -> c) -> b -> a -> c
 lflip f = \x y -> f y x
 
 fsum :: (Num a) => [a] -> a 
